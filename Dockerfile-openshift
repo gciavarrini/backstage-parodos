@@ -1,0 +1,56 @@
+FROM registry.access.redhat.com/ubi8/nodejs-16:latest AS deps
+# USER 0
+
+# # Install yarn
+# RUN \
+#     curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo && \
+#     dnf install -y yarn
+
+# RUN echo "after install"
+
+# COPY ./package.json ./yarn.lock ./
+# COPY ./packages ./packages
+# RUN ls /opt/app-root/src 
+
+
+FROM backstage:latest
+
+# RUN ls ./packages
+# RUN ls /opt
+# USER 0
+
+
+# # RUN ls ./packages
+# RUN ls /opt
+# RUN ls /usr/bin/f*
+# # # Install yarn
+# RUN \
+#     curl --silent --location https://dl.yarnpkg.com/rpm/yarn.repo | tee /etc/yum.repos.d/yarn.repo && \
+#     dnf install -y yarn
+
+# COPY --from=deps ./package.json ./yarn.lock ./
+# COPY --from=deps ./packages ./packages
+# RUN mkdir -p  /opt/app-root/src
+# COPY --from=deps /opt/app-root/src  /opt/app-root/src
+# RUN ls /opt/app-root/src
+# COPY --from=0 ./packages ./packages
+# # Switch to nodejs user
+# USER 1001
+COPY --from=deps /usr/bin/fix-permissions /usr/bin/fix-permissions
+# COPY --from=deps ./package.json ./yarn.lock ./
+
+# # COPY --from=deps /opt/app-root ./
+# # Switch to nodejs user
+# USER 1001
+# RUN pwd
+# RUN cat /etc/passwd
+
+USER node
+
+# RUN rm package-lock.json
+# RUN rm -r node_modules
+# RUN npm i
+# RUN /usr/bin/fix-permissions ./
+RUN /usr/bin/fix-permissions /app
+# RUN /usr/bin/fix-permissions /app/packages
+# RUN chmod -R  777 ./
